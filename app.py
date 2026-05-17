@@ -1,4 +1,5 @@
 import os
+import shutil
 import streamlit as st
 from langchain_ollama import OllamaEmbeddings, OllamaLLM
 from langchain_core.prompts import PromptTemplate
@@ -7,6 +8,14 @@ from langchain_chroma import Chroma
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+
+# Reset vectorDb and pdfFiles on every fresh app startup
+if 'app_initialized' not in st.session_state:
+    for folder in ['vectorDb', 'pdfFiles']:
+        if os.path.exists(folder):
+            shutil.rmtree(folder)
+        os.makedirs(folder)
+    st.session_state.app_initialized = True
 
 if not os.path.exists('pdfFiles'):
     os.makedirs('pdfFiles')
